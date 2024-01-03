@@ -1,2 +1,7 @@
 project/target
 target/
+.metals/*
+ProjectEuler/.metals/metals.lock.db
+ProjectEuler/.metals/metals.log
+ProjectEuler/.metals/metals.mv.db
+ProjectEuler/.vscode/settings.json
