@@ -1,4 +1,5 @@
-@main def problem_37: Unit =
+// @main 
+def problem_37: Unit =
     val is_prime = prime_engine
 
     val truncateable_primes =
