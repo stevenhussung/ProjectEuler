@@ -7,3 +7,10 @@ ProjectEuler/.metals/metals.mv.db
 ProjectEuler/.vscode/settings.json
 
 .scala-build
+.bloop/root/bloop-bsp-clients-classes/classes-Metals-5gGiNwNlTTq1UE5XGHmUOQ==/problem_37_truncateable_primes$package.class
+.bloop/root/bloop-bsp-clients-classes/classes-Metals-5gGiNwNlTTq1UE5XGHmUOQ==/problem_37_truncateable_primes$package.tasty
+.bloop/root/bloop-bsp-clients-classes/classes-Metals-5gGiNwNlTTq1UE5XGHmUOQ==/problem_37_truncateable_primes$package$.class
+*.class
+*.tasty
+*.semanticdb
+.bloop/root/root-analysis.bin
