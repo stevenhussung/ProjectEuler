@@ -1,10 +1,13 @@
 @main def main: Unit =
     println("Checking in")
-    println(greatest_pandigital(192, 9))
+    for i <- (1 to 100000) 
+    do
+        println(greatest_pandigital(i, 9))
 
 def greatest_pandigital(a : Int, n : Int) : Int = 
-    greatest_panditigal(a, 1, n)
+    (1 to n).map(x => pandigital_str(a,x)).filter(_.length <= 9).map(_.toInt).max
 
+/*
 def greatest_pandigital(a : Int, n : Int, count_down : Int) : Int = 
     if countdown == 0 then
         0
@@ -16,6 +19,6 @@ def greatest_pandigital(a : Int, n : Int, count_down : Int) : Int =
         
 def pandigital(a : Int, n : Int) : Long = 
     pandigital_str(a, n).tolong
-
+*/
 def pandigital_str(a : Int, n : Int) : String = 
     (1 to n).map(a*_).map(_.toString()).reduce((a, b) => a.concat(b))
