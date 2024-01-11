@@ -1,4 +1,5 @@
-@main def main: Unit =
+//@main 
+def main: Unit =
     println((1 to 9999).map(i => greatest_pandigital(i,9)).max)
 
 def greatest_pandigital(a : Int, n : Int) : Option[Int] = 
