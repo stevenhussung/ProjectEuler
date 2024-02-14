@@ -7,11 +7,13 @@
     var perimeter_to_triangle_count : Map[Int, Int] = (1 to max_perimeter).map((_, 0)).toMap
 
 //Not quite sure how to iterate through these--are we computing c? Or iterating?
+//I think you want to compute c. Just check using is_square (or change is_square to return the two values)
     for a <- (1 to max_perimeter - 2)
         b <- (1 to max_perimeter - a - 1)
-        c <- (1 to max_perimiter - a - b - 2)
+        c <- (1 to max_perimeter - a - b - 2)
         do
-        if is_triangle(a, b, c) then
+        // if is_triangle(a, b, c) then
+        println("test")
             
         
 
