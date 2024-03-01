@@ -14,3 +14,7 @@ ProjectEuler/.vscode/settings.json
 *.tasty
 *.semanticdb
 .bloop/root/root-analysis.bin
+.bsp/sbt.json
+.bloop/bloop.settings.json
+project/.bloop/bloop.settings.json
+project/.bloop/projecteuler-build.json
