@@ -1,4 +1,4 @@
-@main def problem_39 : Unit = 
+def problem_39 : Unit = 
     println("Here I go again")
 
     val max_perimeter : Int = 1000
