@@ -1,4 +1,4 @@
-@main def problem_40 : Unit = 
+def problem_40 : Unit = 
     println("HERE I GOOOOOOOoooooo")
 
     val n = 12
