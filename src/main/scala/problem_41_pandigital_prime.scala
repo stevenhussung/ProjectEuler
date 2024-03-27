@@ -39,14 +39,15 @@ def problem_41 : Unit =
 
 //Later I may make this tail callable
 def generate_pandigital(s : String): List[String]= 
-    /*
     if s.length == 0 then
         List("")
-        */
+    //If all you want is primes and you want some speedup, can use this one.
+    /*
     if s.length == 1 then
         s match
             case "2" | "4" | "5" | "6" | "8" => List(non_prime_flag)
             case _ => List(s)
+    */
     else
         (
             for digit_char <- s
