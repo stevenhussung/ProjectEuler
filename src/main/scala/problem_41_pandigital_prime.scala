@@ -1,7 +1,7 @@
 
 val non_prime_flag = "-"
 
-@main def problem_41 : Unit = 
+def problem_41 : Unit = 
     println("guitar!")
     
     //Attempt 1: Naive - too slow!
