@@ -1,5 +1,5 @@
 
-@main def problem_43 : Unit = 
+def problem_43 : Unit = 
     println("HERE I GO AGAIN")
 
     val digits = "0123456789"
