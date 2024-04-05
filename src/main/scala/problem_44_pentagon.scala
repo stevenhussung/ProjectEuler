@@ -1,20 +1,24 @@
 
 @main def problem_44 : Unit = 
     println("ON. MY. OWNNNNNNNNN")
-
+    
     for i <- (1 to 10) do
         println(nth_pentagonal(i))
-
+    
     // /* -- Test! -- Success
     for i <- (0 to 20) do 
         println(s"$i, ${is_pentagonal(i)}")
     // */
-
-    //Next: while loop incrementing D, 
-    //  use inner for loop to search over pentagonal numbers for differences equal to d, 
-    //  and test valid sums for pentagonality
+    
     var sum_of_pair : Int = 0
-    // while !is_pentagonal(sum_of_pair)
+    var difference_of_pair_index = 1
+    
+    while
+        difference_of_pair = nth_pentagonal(difference_of_pair_index)
+        !pentagonal_pair_exists(difference_of_pair)
+    do
+        difference_of_pair_index += 1
+
 
 def nth_pentagonal(n : Int) : Int =
     n*(3*n-1)/2
@@ -25,16 +29,25 @@ def is_pentagonal(n : Int) : Boolean =
         seeker = seeker + 1
     nth_pentagonal(seeker) == n
 
-/* Commenting out for now. This is log(n), but sqrt(n) is still pretty good
-var lower = 1
-var higher = n
-var middle = int_average(lower, higher)
+/* Commenting out for now. This is log(n), but sqrt(n) is still pretty good */
 
-//Bisect
-while lower <> higher
-    int_average(lower, higher)
+def pentagonal_pair_exists(d : Int) : Boolean = 
+    !find_pentagonal_pairs(d).isEmpty
+
+def find_pentagonal_pairs(d : Int) =
+    /*
+    The difference between P(n+1) and P(n) (multiplied by 2) is
+    (n+1)(3(n+1) - 1) - n*(3n - 1)
+    = (n+1)(3n + 2) - 3n^2 + n
+    = 3n^2 + 5n + 2 - 3n^2 + n
+    = 6n + 2
+    So P(n+1) - P(n) = 3n + 1
     
-    //Set for next iteration
-    middle = int_average(lower, higher)
-    //TODO
-*/
+    We have to search upward until 3n + 1 > d, or while n <= d/3 - 1. (We use d/3 to avoid thoughts of rounding)
+    After this n, all pentagonal numbers are too far apart for this pentagonal difference.
+    */
+    for a <- (1 to d/3)
+        b <- (1 to d/3 + 1)
+        pentagonal_sum = nth_pentagonal(a) + nth_pentagonal(b)
+        if is_pentagonal(pentagonal_sum)
+        yield (nth_pentagonal(a), nth_pentagonal(b))
