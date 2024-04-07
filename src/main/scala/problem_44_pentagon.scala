@@ -54,10 +54,12 @@ def find_pentagonal_pairs(d : Int) =
     We have to search upward until 3n + 1 > d, or while n <= d/3 - 1. (We use d/3 to avoid thoughts of rounding)
     After this n, all pentagonal numbers are too far apart for this pentagonal difference.
     */
+    (
     for a <- (1 to d/3)
         b <- (a to d/3 + 1)
         p_a = nth_pentagonal(a)
         p_b = nth_pentagonal(b)
         pentagonal_sum = p_a + p_b
-        if p_b - p_a == d && is_pentagonal(pentagonal_sum)
+        if p_b - p_a == d 
         yield (p_a, p_b)
+    ).filter(x => is_pentagonal(x(0) + x(1)))
