@@ -6,7 +6,7 @@
         println(nth_pentagonal(i))
     
     // /* -- Test! -- Success
-    for i <- (0 to 20) do 
+    for i <- (1 to 20) do 
         println(s"$i, ${is_pentagonal(i)}")
     // */
     
@@ -15,11 +15,14 @@
     var difference_of_pair = nth_pentagonal(i)
     
     while
-        println(s"Testing n = ${i}, D = ${difference_of_pair}")
-        difference_of_pair = nth_pentagonal(i)
-        !pentagonal_pair_exists(difference_of_pair) && i < 100
+      difference_of_pair = nth_pentagonal(i)
+      println(s"Testing n = ${i}, D = ${difference_of_pair}")
+      // !pentagonal_pair_exists(difference_of_pair) 
+      // && 
+      i < 100
     do
-        i += 1
+      println(find_pentagonal_pairs(difference_of_pair))
+      i += 1
 
     println(s"index of the difference: ${i}")
     println(s"D = ${difference_of_pair}")
@@ -32,8 +35,14 @@ def nth_pentagonal(n : BigInt) : BigInt =
     n*(3*n-1)/2
 
 def is_pentagonal(n : BigInt) : Boolean = 
-  if n > 0 then is_pentagonal_bisect(n, 0, nth_pentagonal(n))
+  if n > 0 then 
+    var upper_bound = nth_pentagonal(n)/n
+    if upper_bound > n then
+      is_pentagonal_bisect(n, 0, upper_bound)
+    else
+      is_pentagonal_bisect(n, 0, nth_pentagonal(n))
   else false
+
 
 def is_pentagonal_bisect(n : BigInt, low : BigInt, high : BigInt) : Boolean =
   if (low - high).abs <= 1 then
@@ -61,16 +70,26 @@ def find_pentagonal_pairs(d_in : BigInt) =
     = 6n + 2
     So P(n+1) - P(n) = 3n + 1
     
-    We have to search upward until 3n + 1 > d, or while n <= d/3 - 1. (We use d/3 to avoid thoughts of rounding)
+    We have to search upward until 3n + 1 > d, or while n <= d/3 - 1/3. (We use d/3 + 1 to avoid thoughts of rounding)
     After this n, all pentagonal numbers are too far apart for this pentagonal difference.
     */
     val d = d_in.toInt
+    var b : BigInt = 0
+    var p_b : BigInt = 0
     (
-    for a <- (1 to d/3)
-        b <- (a to d/3 + 1)
-        p_a = nth_pentagonal(a)
-        p_b = nth_pentagonal(b)
-        pentagonal_sum = p_a + p_b
-        if p_b - p_a == d 
+    for a <- (1 to d/3 + 1) 
+        p_a = nth_pentagonal(a) 
+
+        p_b_list = (
+          for (b <- (a + 1 to d/3 + 2)) 
+          yield nth_pentagonal(b)
+        ).takeWhile(p_b => p_b <= p_a + d)
+
+        p_b = if p_b_list.length > 0 
+          then p_b_list.max
+          else BigInt(-d)
+
+        if (p_b - p_a) == d 
         yield (p_a, p_b)
-    ).filter(x => is_pentagonal(x(0) + x(1)))
+    )
+    // .filter{x => is_pentagonal(x(0) + x(1))}
