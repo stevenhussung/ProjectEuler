@@ -16,7 +16,8 @@
     
     while
       difference_of_pair = nth_pentagonal(i)
-      println(s"Testing n = ${i}, D = ${difference_of_pair}")
+      if i % 100 == 0 then
+        println(s"Testing n = ${i}, D = ${difference_of_pair}")
       !pentagonal_pair_exists(i, difference_of_pair) 
       // && 
       // i < 100
@@ -43,7 +44,7 @@ def is_pentagonal(n : BigInt) : Boolean =
 
 
 def is_pentagonal_bisect(n : BigInt, low : BigInt, high : BigInt) : Boolean =
-  if (low - high).abs <= 1 then
+  if (high - low) <= 1 then
     false
   else
     var mid = (low + high) / 2
