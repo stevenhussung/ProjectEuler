@@ -17,7 +17,7 @@
     while
       difference_of_pair = nth_pentagonal(i)
       println(s"Testing n = ${i}, D = ${difference_of_pair}")
-      !pentagonal_pair_exists(difference_of_pair) 
+      !pentagonal_pair_exists(i, difference_of_pair) 
       // && 
       // i < 100
     do i += 1
@@ -25,7 +25,7 @@
     println(s"index of the difference: ${i}")
     println(s"D = ${difference_of_pair}")
     
-    var solution_pair = find_pentagonal_pairs(difference_of_pair)
+    var solution_pair = find_pentagonal_pairs(i, difference_of_pair)
     println(s"Solution pair: ${solution_pair}")
     // println(s"Sum of solution pair: ${solution_pair.toList.sum}")
 
@@ -56,10 +56,10 @@ def is_pentagonal_bisect(n : BigInt, low : BigInt, high : BigInt) : Boolean =
       is_pentagonal_bisect(n, mid, high)
 
 
-def pentagonal_pair_exists(d : BigInt) : Boolean = 
-    !find_pentagonal_pairs(d).isEmpty
+def pentagonal_pair_exists(i : Int, d : BigInt) : Boolean = 
+    !find_pentagonal_pairs(i, d).isEmpty
 
-def find_pentagonal_pairs(d_in : BigInt) =
+def find_pentagonal_pairs(i : Int, d_in : BigInt) =
     /*
     The difference between P(n+1) and P(n) (multiplied by 2) is
     (n+1)(3(n+1) - 1) - n*(3n - 1)
@@ -70,16 +70,19 @@ def find_pentagonal_pairs(d_in : BigInt) =
     
     We have to search upward until 3n + 1 > d, or while n <= d/3 - 1/3. (We use d/3 + 1 to avoid thoughts of rounding)
     After this n, all pentagonal numbers are too far apart for this pentagonal difference.
+    
+    p_a > d/3 - 1/3 
+    p_a > d/3 - 1
     */
     val d = d_in.toInt
     var b : BigInt = 0
     var p_b : BigInt = 0
     (
-    for a <- (1 to d/3 + 1) 
+    for a <- (math.floor(math.sqrt(i)).toInt to d/3 + 1) 
         p_a = nth_pentagonal(a) 
         p_b = p_a + d
 
         if is_pentagonal(p_b)
+          && is_pentagonal(p_a + p_b)
         yield (p_a, p_b)
     )
-    .filter{x => is_pentagonal(x(0) + x(1))}
