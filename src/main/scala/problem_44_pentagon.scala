@@ -4,10 +4,12 @@
     
     for i <- (1 to 10) do
         println(nth_pentagonal(i))
+        
+    var checker = Pentagon_knower()
     
     // /* -- Test! -- Success
     for i <- (1 to 20) do 
-        println(s"$i, ${is_pentagonal(i)}")
+        println(s"$i, ${checker.is_pentagonal(i)}")
     // */
     
     var sum_of_pair : Int = 0
@@ -18,7 +20,7 @@
       difference_of_pair = nth_pentagonal(i)
       if i % 100 == 0 then
         println(s"Testing n = ${i}, D = ${difference_of_pair}")
-      !pentagonal_pair_exists(i, difference_of_pair) 
+      !pentagonal_pair_exists(i, difference_of_pair, checker) 
       // && 
       // i < 100
     do i += 1
@@ -26,41 +28,33 @@
     println(s"index of the difference: ${i}")
     println(s"D = ${difference_of_pair}")
     
-    var solution_pair = find_pentagonal_pairs(i, difference_of_pair)
+    var solution_pair = find_pentagonal_pairs(i, difference_of_pair, checker)
     println(s"Solution pair: ${solution_pair}")
     // println(s"Sum of solution pair: ${solution_pair.toList.sum}")
 
 def nth_pentagonal(n : BigInt) : BigInt =
     n*(3*n-1)/2
 
-def is_pentagonal(n : BigInt) : Boolean = 
-  if n > 0 then 
-    var upper_bound = nth_pentagonal(n)/n
-    if upper_bound > n then
-      is_pentagonal_bisect(n, 0, upper_bound)
-    else
-      is_pentagonal_bisect(n, 0, nth_pentagonal(n))
-  else false
+class Pentagon_knower():
+  var max_known_index = BigInt(1)
+  var max_known_pentagonal = BigInt(1)
+  private var known_pentagonal_nums = scala.collection.mutable.Set[BigInt](1)
+  
+  def is_pentagonal(n : BigInt) = 
+    while n > max_known_pentagonal 
+      do this.learn_next()
+    known_pentagonal_nums.contains(n)
+
+  private def learn_next() = 
+    max_known_index += 1
+    max_known_pentagonal = nth_pentagonal(max_known_index)
+    known_pentagonal_nums.add(max_known_pentagonal)
 
 
-def is_pentagonal_bisect(n : BigInt, low : BigInt, high : BigInt) : Boolean =
-  if (high - low) <= 1 then
-    false
-  else
-    var mid = (low + high) / 2
-    var mid_pent = nth_pentagonal(mid)
-    if mid_pent == n then
-      true
-    else if mid_pent > n then
-      is_pentagonal_bisect(n, low, mid)
-    else
-      is_pentagonal_bisect(n, mid, high)
+def pentagonal_pair_exists(i : Int, d : BigInt, checker : Pentagon_knower) : Boolean = 
+    !find_pentagonal_pairs(i, d, checker).isEmpty
 
-
-def pentagonal_pair_exists(i : Int, d : BigInt) : Boolean = 
-    !find_pentagonal_pairs(i, d).isEmpty
-
-def find_pentagonal_pairs(i : Int, d_in : BigInt) =
+def find_pentagonal_pairs(i : Int, d_in : BigInt, checker : Pentagon_knower) =
     /*
     The difference between P(n+1) and P(n) (multiplied by 2) is
     (n+1)(3(n+1) - 1) - n*(3n - 1)
@@ -83,7 +77,7 @@ def find_pentagonal_pairs(i : Int, d_in : BigInt) =
         p_a = nth_pentagonal(a) 
         p_b = p_a + d
 
-        if is_pentagonal(p_b)
-          && is_pentagonal(p_a + p_b)
+        if checker.is_pentagonal(p_b)
+          && checker.is_pentagonal(p_a + p_b)
         yield (p_a, p_b)
     )
