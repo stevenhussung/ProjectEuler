@@ -17,12 +17,10 @@
     while
       difference_of_pair = nth_pentagonal(i)
       println(s"Testing n = ${i}, D = ${difference_of_pair}")
-      // !pentagonal_pair_exists(difference_of_pair) 
+      !pentagonal_pair_exists(difference_of_pair) 
       // && 
-      i < 100
-    do
-      println(find_pentagonal_pairs(difference_of_pair))
-      i += 1
+      // i < 100
+    do i += 1
 
     println(s"index of the difference: ${i}")
     println(s"D = ${difference_of_pair}")
@@ -79,17 +77,9 @@ def find_pentagonal_pairs(d_in : BigInt) =
     (
     for a <- (1 to d/3 + 1) 
         p_a = nth_pentagonal(a) 
+        p_b = p_a + d
 
-        p_b_list = (
-          for (b <- (a + 1 to d/3 + 2)) 
-          yield nth_pentagonal(b)
-        ).takeWhile(p_b => p_b <= p_a + d)
-
-        p_b = if p_b_list.length > 0 
-          then p_b_list.max
-          else BigInt(-d)
-
-        if (p_b - p_a) == d 
+        if is_pentagonal(p_b)
         yield (p_a, p_b)
     )
-    // .filter{x => is_pentagonal(x(0) + x(1))}
+    .filter{x => is_pentagonal(x(0) + x(1))}
