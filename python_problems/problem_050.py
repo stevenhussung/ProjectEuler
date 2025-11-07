@@ -1,3 +1,13 @@
+# 
+# TODO: Next todo item. If you already have a culative prime list of length k, 
+# then you can stop looking for subsequences once you reach n/k. This is because
+# to get a longer list, you would have to find k numbers larger than n/k, which 
+# will sum to over n.
+#
+# This means you can adaptively adjust the number at which you stop looking for
+# more sequences. (We still need to do this!)
+#
+
 #Tested
 def primes_under(n):
     """
