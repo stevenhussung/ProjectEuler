@@ -63,19 +63,29 @@ if longest_prime_sum_from_start([2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41,
 
 
 def longest_prime_sum(primes):
+
+    n = len(primes)
+    largest_prime = primes[-1]
     max_len = 0
     seq_with_max_len = []
-    for i in range(len(primes)):
+    for i in range(n):
+        #print("Searching for longest prime sum beginning with", primes[i], "and searching through", len(primes) - i, "primes")
         seq = longest_prime_sum_from_start(primes[i:])
         if len(seq) > max_len:
             max_len = len(seq)
             seq_with_max_len = seq
 
+        if i*max_len > largest_prime:
+            break
+
     return seq_with_max_len
 
 
 n = 10000
+print("Generate primes")
 primes = primes_under(n)
+
+print("Finding longest prime sum")
 s = longest_prime_sum(primes)
 print(s)
 
