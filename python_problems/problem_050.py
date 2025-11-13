@@ -1,12 +1,4 @@
-# 
-# TODO: Next todo item. If you already have a culative prime list of length k, 
-# then you can stop looking for subsequences once you reach n/k. This is because
-# to get a longer list, you would have to find k numbers larger than n/k, which 
-# will sum to over n.
-#
-# This means you can adaptively adjust the number at which you stop looking for
-# more sequences. (We still need to do this!)
-
+#Solved! Answer in 7 seconds: 997651
 
 #Tested
 def primes_under(n):
@@ -35,13 +27,18 @@ if primes_under(100) != [2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47,
 
 def longest_prime_sum_from_start(primes, max_len=1):
 
-    sum_start = primes[0]
     largest_prime = primes[-1]
-    print("Largest prime:", largest_prime)
-    primes_shortened = primes[:largest_prime//sum_start + 1]
+    primes_shortened = primes[:largest_prime//primes[0] + 1]
     prime_set = set(primes)
 
-    prime_sum_subsequences = [primes_shortened[0:i] for i in range(max_len, len(primes_shortened)) if sum(primes[0:i]) <= largest_prime and sum(primes[0:i]) in prime_set]
+    prime_sum_subsequences = []
+    for i in range(max_len, len(primes_shortened)):
+        temp = primes[0:i]
+        temp_sum = sum(temp)
+        if temp_sum in prime_set:
+            prime_sum_subsequences.append(temp)
+        elif temp_sum > largest_prime:
+            break
 
     if len(prime_sum_subsequences) > 0:
         longest_length = max([len(s) for s in prime_sum_subsequences])
@@ -54,16 +51,18 @@ if longest_prime_sum_from_start([2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41,
     print("Error in longest_prime_sum_from_start")
     print("Longest_prime_sum_from_start(primes(100)):", longest_prime_sum_from_start(primes_under(100)))
 
+if longest_prime_sum_from_start(primes_under(1000)) != 953:
+    print("Error in longest_prime_sum_from_start(primes(1000))")
 
 def longest_prime_sum(primes):
 
     n = len(primes)
     largest_prime = primes[-1]
-    max_len = 0
+    max_len = 1
     seq_with_max_len = []
     for i in range(n):
-        print("Searching for longest prime sum beginning with", primes[i], "and searching through", len(primes) - i, "primes")
-        seq = longest_prime_sum_from_start(primes[i:])
+        #print("Searching for longest prime sum beginning with", primes[i], "and searching through", len(primes) - i, "primes")
+        seq = longest_prime_sum_from_start(primes[i:], max_len)
         if len(seq) > max_len:
             max_len = len(seq)
             seq_with_max_len = seq
@@ -74,12 +73,12 @@ def longest_prime_sum(primes):
     return seq_with_max_len
 
 
-n = 200000
+n = 1000000
 print("Generate primes")
 primes = primes_under(n)
 
 print("Finding longest prime sum")
 s = longest_prime_sum(primes)
-print(s)
+print("Longest prime sum sequence under", n, ":", s)
 
-print(sum(s))
+print("Sum is", sum(s))
