@@ -11,6 +11,12 @@ hand_score = \
      "Straight Flush" : 9,
      "Royal Flush" : 10}
 
+def rank_score(r):
+    if r in map(str, [2, 3, 4, 5, 6, 7, 8, 9, 10]):
+        return int(r)
+    else:
+        return {"J":11, "Q":12, "K":13, "A":14}[r]
+
 
 #print(hand_score["Full House"])
 #print(hand_score["Full House"] > hand_score["Two Pairs"])
@@ -18,14 +24,19 @@ hand_score = \
 def get_hand_ranks(hand):
     return [hand[2*i] for i in range(5)]
 
+def get_hand_suits(hand):
+    return [hand[2*i + 1] for i in range(5)]
+
 def cardinalities(hand):
     ranks = get_hand_ranks(hand)
     cardinalities = { r : ranks.count(r) for r in ranks}
     return cardinalities
 
-def read_multiple_hands(hand):
+def read_multiple_hand(hand):
     cardinal = cardinalities(hand)
     significant_ranks = list(filter(lambda x: cardinal[x] > 1, cardinal))
+    significant_ranks = sorted(significant_ranks, reverse=True, key=lambda r : cardinal[r]*10 + rank_score(r))
+
     rank_multiplicities = sorted(map(lambda r : cardinal[r], significant_ranks), key = lambda x : -x)
 
     if rank_multiplicities == [3, 2]:
@@ -41,23 +52,38 @@ def read_multiple_hands(hand):
     else:
         hand_name = ""
 
-    return hand_name #This is only temporary--you also need the cards that make up the hand for breaking ties
+    return (hand_name, significant_ranks) 
 
-hand = "5H5C6S7SKD"
-print(hand)
-print(get_hand_ranks(hand))
-print(cardinalities(hand))
-print(read_multiple_hands(hand))
+def check_straight(hand):
+    ranks = sorted(list(map(rank_score, get_hand_ranks(hand))))
+    diffs = [ranks[i+1] - ranks[i] for i in range(len(ranks)-1)]
+    return list(set(diffs)) == [1]
 
-hand = "5H5C6S7S6D"
-print(hand)
-print(get_hand_ranks(hand))
-print(cardinalities(hand))
-print(read_multiple_hands(hand))
+def check_flush(hand):
+    suits = get_hand_suits(hand)
+    return len(list(set(suits))) == 1
 
-hand = "5H5C6S6S6D"
-print(hand)
-print(get_hand_ranks(hand))
-print(cardinalities(hand))
-print(read_multiple_hands(hand))
+def read_hand(hand):
+    multiples = read_multiple_hand(hand)
+    if multiples[0] != "":
+        return multiples
+    else:
+        #Check for straights, flushes, royal flush TODO Add high card
+        if check_flush(hand) and check_straight(hand):
+            return ("Royal Flush", [])
+        elif check_straight(hand):
+            return ("Straight", [])
+        elif check_flush(hand):
+            return ("Flush", [])
+        return ("High Card", [max(get_hand_ranks(hand))])
+
+
+hand_list = ["2H4H6S8CQC", "5H5C6S7SKD", "5H5C6S7S6D", "5H5C5S6S6D", "2H4H7HKH8H", "2H3C4S5S6C"]
+for hand in hand_list:
+    print(hand)
+    print(get_hand_ranks(hand))
+    print(get_hand_suits(hand))
+    print(cardinalities(hand))
+    print(read_hand(hand))
+    print()
 
