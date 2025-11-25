@@ -37,13 +37,18 @@ def get_hand_suits(hand):
 
 def cardinalities(hand):
     ranks = get_hand_ranks(hand)
-    cardinalities = { r : ranks.count(r) for r in ranks}
-    return cardinalities
+    return { r : ranks.count(r) for r in ranks}
+
+def get_significant_ranks(hand):
+    cardinal = cardinalities(hand)
+    significant_ranks = list(filter(lambda x: cardinal[x] > 1, cardinal))
+    significant_ranks = sorted(significant_ranks, reverse=True, key=lambda r : cardinal[r]*100 + rank_score(r))
+    return significant_ranks
+
 
 def read_multiple_hand(hand):
     cardinal = cardinalities(hand)
-    significant_ranks = list(filter(lambda x: cardinal[x] > 1, cardinal))
-    significant_ranks = sorted(significant_ranks, reverse=True, key=lambda r : cardinal[r]*10 + rank_score(r))
+    significant_ranks = get_significant_ranks(hand)
 
     rank_multiplicities = sorted(map(lambda r : cardinal[r], significant_ranks), key = lambda x : -x)
 
@@ -103,6 +108,22 @@ def successive_high_card(hand_1, hand_2):
     #All ties
     return 0
 
+def tiebreaker(hand_1, hand_2):
+    #Hand types are equal
+    hand_type = read_hand(hand_1)
+    sig_ranks_1 = get_significant_ranks(hand_1)
+    sig_ranks_2 = get_significant_ranks(hand_2)
+
+    if sig_ranks_1 != []:
+        if rank_score(sig_ranks_1[0]) > rank_score(sig_ranks_2[0]):
+            return (1, 'Hand Rank')
+        elif rank_score(sig_ranks_1[0]) < rank_score(sig_ranks_2[0]):
+            return (2, 'Hand Rank')
+        else:
+            return (successive_high_card(hand_1, hand_2), "High Card")
+    else:
+        return (successive_high_card(hand_1, hand_2), "High Card")
+
 def compare_hands(hand_1, hand_2):
     #Compare hand types
     hand_1_type_score = hand_score[read_hand(hand_1)]
@@ -113,18 +134,20 @@ def compare_hands(hand_1, hand_2):
     elif hand_1_type_score < hand_2_type_score:
         return (2, "Hand Type")
     else:
-        return (successive_high_card(hand_1, hand_2), "High Card")
+        return tiebreaker(hand_1, hand_2)
 
 
 # Test cases
 if False:
-    hand_list = ["2H4H6S8CQC", "5H5C6S7SKD", "5H4C6S7S6D", "5H5C5S6S6D", "2H4H7HKH8H", "2H3C4S5S6C"]
+    #hand_list = ["2H4H6S8CQC", "5H5C6S7SKD", "5H4C6S7S6D", "5H5C5S6S6D", "2H4H7HKH8H", "2H3C4S5S6C"]
+    hand_list = ["TH8H5CQSTC", "9H4DJCKSJS"]
     for hand in hand_list:
         print(hand)
         print(get_hand_ranks(hand))
         print(get_scored_hand_ranks(hand))
         print(get_hand_suits(hand))
         print(cardinalities(hand))
+        print(get_significant_ranks(hand))
         print(read_hand(hand))
         print()
 
@@ -135,12 +158,23 @@ if False:
             print(compare_hands(hand_1, hand_2))
             print()
 
+print(" - - - Reading file - - - ")
+
 with open("data_054.txt", "r") as datafile:
     poker_result = []
+    hand_type_result = []
     for line in datafile:
         hand_1 = "".join(line.split(" ")[:5]).strip()
         hand_2 = "".join(line.split(" ")[5:]).strip()
         poker_result.append(compare_hands(hand_1, hand_2))
+        hand_type_result.append(read_hand(hand_1))
+        hand_type_result.append(read_hand(hand_2))
+        if False:
+            if compare_hands(hand_1, hand_2)[1] in ["Hand Rank"]:
+                print(hand_1, read_hand(hand_1))
+                print(hand_2, read_hand(hand_2))
+                print(compare_hands(hand_1, hand_2))
+                print()
 
     wins_1 = len(list(filter(lambda result : result[0] == 1, poker_result)))
     wins_2 = len(list(filter(lambda result : result[0] == 2, poker_result)))
@@ -148,3 +182,7 @@ with open("data_054.txt", "r") as datafile:
     print("Number of wins for hand 1:", wins_1)
     print("Number of wins for hand 2:", wins_2)
     print("Number of ties:", ties)
+
+    #Hand type analysis
+    for hand_type in hand_score:
+        print(hand_type, " appeared ", hand_type_result.count(hand_type), "times, which is", f"{hand_type_result.count(hand_type) / 2000 * 100:.2f}", "%")
