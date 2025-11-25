@@ -19,14 +19,10 @@ hand_score = \
      "Royal Flush" : 10}
 
 def rank_score(r):
-    if r in map(str, [2, 3, 4, 5, 6, 7, 8, 9, 10]):
+    if r in map(str, [2, 3, 4, 5, 6, 7, 8, 9]):
         return int(r)
     else:
-        return {"J":11, "Q":12, "K":13, "A":14}[r]
-
-
-#print(hand_score["Full House"])
-#print(hand_score["Full House"] > hand_score["Two Pairs"])
+        return {"T":10, "J":11, "Q":12, "K":13, "A":14}[r]
 
 def get_hand_ranks(hand):
     return [hand[2*i] for i in range(5)]
@@ -82,7 +78,12 @@ def read_hand(hand):
     else:
         #Check for straights, flushes, royal flush
         if check_flush(hand) and check_straight(hand):
-            return "Royal Flush"
+            #Check for royal
+            high_card = get_scored_hand_ranks(hand)[0]
+            if high_card == rank_score("A"):
+                return "Royal Flush"
+            else:
+                return "Straight Flush"
         elif check_straight(hand):
             return "Straight"
         elif check_flush(hand):
@@ -133,3 +134,17 @@ if False:
             print(hand_2, read_hand(hand_2))
             print(compare_hands(hand_1, hand_2))
             print()
+
+with open("data_054.txt", "r") as datafile:
+    poker_result = []
+    for line in datafile:
+        hand_1 = "".join(line.split(" ")[:5]).strip()
+        hand_2 = "".join(line.split(" ")[5:]).strip()
+        poker_result.append(compare_hands(hand_1, hand_2))
+
+    wins_1 = len(list(filter(lambda result : result[0] == 1, poker_result)))
+    wins_2 = len(list(filter(lambda result : result[0] == 2, poker_result)))
+    ties =   len(list(filter(lambda result : result[0] == 0, poker_result)))
+    print("Number of wins for hand 1:", wins_1)
+    print("Number of wins for hand 2:", wins_2)
+    print("Number of ties:", ties)

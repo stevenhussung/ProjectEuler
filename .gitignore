@@ -19,3 +19,5 @@ ProjectEuler/.vscode/settings.json
 project/.bloop/bloop.settings.json
 project/.bloop/projecteuler-build.json
 .bloop/root/root-test-analysis.bin
+
+python_problems/data*
