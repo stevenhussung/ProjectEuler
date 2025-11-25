@@ -1,3 +1,10 @@
+#
+# Project Euler: Problem 54 - Poker Hands
+# 
+# Need to compare two poker hands. Ties broken by successive high card
+#
+# Each hand reader needs to return the name of the hand
+#
 
 hand_score = \
     {"High Card" : 1,
@@ -23,6 +30,11 @@ def rank_score(r):
 
 def get_hand_ranks(hand):
     return [hand[2*i] for i in range(5)]
+
+def get_scored_hand_ranks(hand):
+    ranks = get_hand_ranks(hand)
+    scored_ranks = map(rank_score, ranks)
+    return sorted(list(scored_ranks), reverse=True)
 
 def get_hand_suits(hand):
     return [hand[2*i + 1] for i in range(5)]
@@ -52,7 +64,7 @@ def read_multiple_hand(hand):
     else:
         hand_name = ""
 
-    return (hand_name, significant_ranks) 
+    return hand_name
 
 def check_straight(hand):
     ranks = sorted(list(map(rank_score, get_hand_ranks(hand))))
@@ -65,23 +77,24 @@ def check_flush(hand):
 
 def read_hand(hand):
     multiples = read_multiple_hand(hand)
-    if multiples[0] != "":
+    if multiples != "":
         return multiples
     else:
-        #Check for straights, flushes, royal flush TODO Add high card
+        #Check for straights, flushes, royal flush
         if check_flush(hand) and check_straight(hand):
-            return ("Royal Flush", [])
+            return "Royal Flush"
         elif check_straight(hand):
-            return ("Straight", [])
+            return "Straight"
         elif check_flush(hand):
-            return ("Flush", [])
-        return ("High Card", [max(get_hand_ranks(hand))])
+            return "Flush"
+        return "High Card"
 
 
 hand_list = ["2H4H6S8CQC", "5H5C6S7SKD", "5H5C6S7S6D", "5H5C5S6S6D", "2H4H7HKH8H", "2H3C4S5S6C"]
 for hand in hand_list:
     print(hand)
     print(get_hand_ranks(hand))
+    print(get_scored_hand_ranks(hand))
     print(get_hand_suits(hand))
     print(cardinalities(hand))
     print(read_hand(hand))
