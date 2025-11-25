@@ -89,14 +89,47 @@ def read_hand(hand):
             return "Flush"
         return "High Card"
 
+def successive_high_card(hand_1, hand_2):
+    ranks_1 = get_scored_hand_ranks(hand_1)
+    ranks_2 = get_scored_hand_ranks(hand_2)
 
-hand_list = ["2H4H6S8CQC", "5H5C6S7SKD", "5H5C6S7S6D", "5H5C5S6S6D", "2H4H7HKH8H", "2H3C4S5S6C"]
-for hand in hand_list:
-    print(hand)
-    print(get_hand_ranks(hand))
-    print(get_scored_hand_ranks(hand))
-    print(get_hand_suits(hand))
-    print(cardinalities(hand))
-    print(read_hand(hand))
-    print()
+    for r_1, r_2 in zip(ranks_1, ranks_2):
+        if r_1 > r_2:
+            return 1
+        if r_1 < r_2:
+            return 2
+    
+    #All ties
+    return 0
 
+def compare_hands(hand_1, hand_2):
+    #Compare hand types
+    hand_1_type_score = hand_score[read_hand(hand_1)]
+    hand_2_type_score = hand_score[read_hand(hand_2)]
+
+    if hand_1_type_score > hand_2_type_score:
+        return (1, "Hand Type")
+    elif hand_1_type_score < hand_2_type_score:
+        return (2, "Hand Type")
+    else:
+        return (successive_high_card(hand_1, hand_2), "High Card")
+
+
+# Test cases
+if False:
+    hand_list = ["2H4H6S8CQC", "5H5C6S7SKD", "5H4C6S7S6D", "5H5C5S6S6D", "2H4H7HKH8H", "2H3C4S5S6C"]
+    for hand in hand_list:
+        print(hand)
+        print(get_hand_ranks(hand))
+        print(get_scored_hand_ranks(hand))
+        print(get_hand_suits(hand))
+        print(cardinalities(hand))
+        print(read_hand(hand))
+        print()
+
+    for hand_1 in hand_list:
+        for hand_2 in hand_list:
+            print(hand_1, read_hand(hand_1))
+            print(hand_2, read_hand(hand_2))
+            print(compare_hands(hand_1, hand_2))
+            print()
