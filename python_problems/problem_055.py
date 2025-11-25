@@ -26,6 +26,7 @@ def is_likely_lychrel(n):
             return False
     return True
 
-for i in range(10000):
-    if is_likely_lychrel(i):
-        print(i, "is likely a Lychrel number")
+lychrel_numbers = list(filter(is_likely_lychrel, range(1, 10000)))
+
+print("Number of Lychrel numbers under 10k:", len(lychrel_numbers))
+print(lychrel_numbers)
